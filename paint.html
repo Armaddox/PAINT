@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint Online HTML</title>
+
+    <link rel="shortcut icon" href="paint.png" type="image/x-icon">
+    
+    <style>
+        canvas {
+            border: 5px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="paintcanvas" width="800" height="600"></canvas>
+
+    <BR></BR>
+
+    <input type="color" id="colorpicker" value="#000000">
+    <input type="range" id="brushsize" min="1" max="20" value="5">
+
+    <BR></BR>
+
+    <button id="clearbutton">Borrar</button>
+
+    <script>
+        const canvas = document.getElementById('paintcanvas');
+        const context = canvas.getContext('2d');
+        const colorpicker = document.getElementById('colorpicker');
+        const brushsize = document.getElementById('brushsize');
+        const clearbutton = document.getElementById('clearbutton');
+
+        let painting = false;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            context.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+
+            context.lineWidth = brushsize.value;
+            context.lineCap = 'round';
+            context.strokeStyle = colorpicker.value;
+
+            context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function clearCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        clearbutton.addEventListener('click', clearCanvas);
+    </script>
+</body>
+</html>
